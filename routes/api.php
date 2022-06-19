@@ -15,5 +15,29 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+	return $request->user();
 });
+
+//API route for register new user
+Route::post('/register', [App\Http\Controllers\API\AuthController::class, 'register']);
+
+//API route for login user
+Route::post('/login', [App\Http\Controllers\API\AuthController::class, 'login']);
+
+
+//Protecting Routes
+Route::group(['middleware' => ['auth:sanctum']], function () {
+	Route::get('/profile', function(Request $request) {
+		return auth()->user();
+	});
+
+	Route::resource('jurusan', App\Http\Controllers\API\JurusanController::class);
+	Route::resource('jmasuk', App\Http\Controllers\API\JmasukController::class);
+	Route::resource('jdaftar', App\Http\Controllers\API\jpendaftaranController::class);
+	Route::resource('periode_daftar', App\Http\Controllers\API\Periode_pendaftaranController::class);
+	Route::resource('pembayaran', App\Http\Controllers\API\PembayaranController::class);
+    // API route for logout user
+	Route::post('/logout', [App\Http\Controllers\API\AuthController::class, 'logout']);
+});
+
+// Auth::routes(['verify' => true]);
